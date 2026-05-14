@@ -29,7 +29,7 @@
     <div class="row mb-4">
         <div class="col">
             <h2 class="fw-bold text-primary">QuickerSite Newsletter Generator</h2>
-            <p class="text-muted">Generates 100% table-based templates with viewport-adaptive typography for mobile devices.</p>
+            <p class="text-muted">Generates 100% table-based templates with viewport-adaptive typography and native QuickerSite tags.</p>
         </div>
         <div class="col-auto text-end d-flex align-items-center">
             <button id="generate-btn" class="btn btn-primary btn-lg me-2">Generate Random Template</button>
@@ -68,11 +68,11 @@
 <script>
     // Configuration Data for Randomization
     const colorSchemes = [
-        { bg: "#f4f4f4", header: "#2c3e50", text: "#333333", accent: "#e74c3c", headerText: "#ffffff" },
-        { bg: "#eceff1", header: "#1976d2", text: "#263238", accent: "#ff9800", headerText: "#ffffff" },
-        { bg: "#f9fbfd", header: "#2e7d32", text: "#1b5e20", accent: "#c62828", headerText: "#ffffff" },
-        { bg: "#f3f4f6", header: "#4b5563", text: "#374151", accent: "#2563eb", headerText: "#ffffff" },
-        { bg: "#fff3e0", header: "#e65100", text: "#3e2723", accent: "#00bfa5", headerText: "#ffffff" }
+        { bg: "#f4f4f4", header: "#2c3e50", text: "#333333", accent: "#e74c3c", headerText: "#ffffff", footerBg: "#B8C3CF" },
+        { bg: "#eceff1", header: "#1976d2", text: "#263238", accent: "#ff9800", headerText: "#ffffff", footerBg: "#cfd8dc" },
+        { bg: "#f9fbfd", header: "#2e7d32", text: "#1b5e20", accent: "#c62828", headerText: "#ffffff", footerBg: "#c8e6c9" },
+        { bg: "#f3f4f6", header: "#4b5563", text: "#374151", accent: "#2563eb", headerText: "#ffffff", footerBg: "#e5e7eb" },
+        { bg: "#fff3e0", header: "#e65100", text: "#3e2723", accent: "#00bfa5", headerText: "#ffffff", footerBg: "#ffe0b2" }
     ];
 
     // High-quality, reliable Unsplash business/tech images
@@ -131,28 +131,28 @@
         <tr>
             <td align="center">
                 <!-- Using max-width for fluid behavior on mobile, falling back to width="600" for legacy clients -->
-                <table border="0" cellpadding="0" cellspacing="0" width="600" class="fluid-table" style="background-color: #ffffff; font-family: Arial, Helvetica, sans-serif; border: 1px solid #dddddd; max-width: 600px; width: 100%;">
+                <table border="0" cellpadding="0" cellspacing="0" width="600" class="fluid-table" style="background-color: #ffffff; font-family: Verdana, Arial, sans-serif; border: 6px solid #FFFFFF; max-width: 600px; width: 100%;">
                     <!-- Header -->
                     <tbody>
                         <tr>
-                            <td align="center" bgcolor="${scheme.header}" class="fluid-padding" style="padding: 40px 20px;">
-                                <h1 class="fluid-h1" style="color: ${scheme.headerText}; font-size: 28px; margin: 0; font-weight: bold; line-height: 1.2;">${headline}</h1>
+                            <td align="center" bgcolor="${scheme.header}" class="fluid-padding" style="padding: 40px 20px; border-bottom: 6px solid #FFFFFF;">
+                                <h1 class="fluid-h1" style="color: ${scheme.headerText}; font-size: 28px; margin: 0; font-weight: bold; line-height: 1.2;"><em><strong>${headline}</strong></em></h1>
                             </td>
                         </tr>
                         <!-- Hero Image -->
                         <tr>
-                            <td align="center" style="padding: 0;">
+                            <td align="center" style="padding: 0; border-bottom: 6px solid #FFFFFF;">
                                 <img src="${image}" alt="Newsletter Banner" width="600" style="display: block; width: 100%; max-width: 600px; height: auto; border: 0;" />
                             </td>
                         </tr>
                         <!-- Body Content -->
                         <tr>
-                            <td align="left" class="fluid-padding" style="padding: 40px 30px; color: ${scheme.text}; font-size: 16px; line-height: 1.6;">
+                            <td align="left" bgcolor="#efefef" class="fluid-padding" style="padding: 40px 30px; color: ${scheme.text}; font-size: 16px; line-height: 1.6; border-bottom: 6px solid #FFFFFF;">
                                 <p class="fluid-p" style="margin-top: 0;"><strong>Dear [NL_NAME],</strong></p>
                                 <p class="fluid-p" style="margin-bottom: 25px;">${para1}</p>
                                 
                                 <!-- Inner Callout Table -->
-                                <table border="0" cellpadding="20" cellspacing="0" width="100%" style="background-color: #f9f9f9; border-left: 4px solid ${scheme.accent}; margin-bottom: 25px;">
+                                <table border="0" cellpadding="20" cellspacing="0" width="100%" style="background-color: #ffffff; border-left: 4px solid ${scheme.accent}; margin-bottom: 25px;">
                                     <tbody>
                                         <tr>
                                             <td class="fluid-p" style="color: ${scheme.text}; font-size: 15px; line-height: 1.5;">
@@ -174,13 +174,17 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                
+                                <p class="fluid-p" style="margin-top: 35px; margin-bottom: 0;">
+                                    Best regards,<br />
+                                    MyName
+                                </p>
                             </td>
                         </tr>
-                        <!-- Footer -->
+                        <!-- Footer / Unsubscribe Tag (Raw Text) -->
                         <tr>
-                            <td align="center" bgcolor="#eeeeee" class="fluid-padding" style="padding: 30px 20px; font-size: 13px; line-height: 1.5; color: #888888; border-top: 1px solid #dddddd;">
-                                <p style="margin: 0 0 10px 0;">You are receiving this email because you are subscribed to QuickerSite updates.</p>
-                                <p style="margin: 0;"><a href="[NL_UNSUBSCRIBELINK]" style="color: #888888; text-decoration: underline;">Unsubscribe from this list</a></p>
+                            <td align="center" bgcolor="${scheme.footerBg}" class="fluid-padding" style="padding: 15px; font-size: 11px; color: #555555; text-align: center;">
+                                [NL_UNSUBSCRIBELINK]
                             </td>
                         </tr>
                     </tbody>
