@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickerSite Newsletter Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding-top: 2rem; }
+        #preview-container {
+            border: 1px solid #dee2e6;
+            background: #fff;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            height: 600px;
+            overflow-y: auto;
+        }
+        #code-output {
+            font-family: monospace;
+            font-size: 0.875rem;
+            height: 400px;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid max-width-1200">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="fw-bold text-primary">QuickerSite Newsletter Generator</h2>
+            <p class="text-muted">Generates 100% table-based, inline-CSS templates optimized for legacy email clients.</p>
+        </div>
+        <div class="col-auto text-end d-flex align-items-center">
+            <button id="generate-btn" class="btn btn-primary btn-lg me-2">Generate Random Template</button>
+            <button id="copy-btn" class="btn btn-outline-success btn-lg">Copy HTML Code</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Code Output Column -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white fw-bold">
+                    Raw HTML (Ready to Paste)
+                </div>
+                <div class="card-body p-0">
+                    <textarea id="code-output" class="form-control border-0 p-3 w-100" readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Preview Column -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white fw-bold">
+                    Live Preview
+                </div>
+                <div class="card-body bg-light">
+                    <div id="preview-container" class="shadow-sm"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Configuration Data for Randomization
+    const colorSchemes = [
+        { bg: "#f4f4f4", header: "#2c3e50", text: "#333333", accent: "#e74c3c", headerText: "#ffffff" },
+        { bg: "#eceff1", header: "#1976d2", text: "#263238", accent: "#ff9800", headerText: "#ffffff" },
+        { bg: "#f9fbfd", header: "#2e7d32", text: "#1b5e20", accent: "#c62828", headerText: "#ffffff" },
+        { bg: "#f3f4f6", header: "#4b5563", text: "#374151", accent: "#2563eb", headerText: "#ffffff" },
+        { bg: "#fff3e0", header: "#e65100", text: "#3e2723", accent: "#00bfa5", headerText: "#ffffff" }
+    ];
+
+    // High-quality, reliable Unsplash business/tech images
+    const unsplashImages = [
+        "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&h=250&q=80",
+        "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&h=250&q=80",
+        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&h=250&q=80",
+        "https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=600&h=250&q=80",
+        "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&h=250&q=80"
+    ];
+
+    const headlines = [
+        "Monthly Digest & Updates",
+        "Important News from Our Team",
+        "Your Latest Insider Insights",
+        "New Features & Enhancements",
+        "QuickerSite Community Newsletter"
+    ];
+
+    const loremParagraphs = [
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor."
+    ];
+
+    // Utility: Pick random item from array
+    function getRandom(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // Core Generation Logic
+    function generateTemplate() {
+        const scheme = getRandom(colorSchemes);
+        const image = getRandom(unsplashImages);
+        const headline = getRandom(headlines);
+        const para1 = getRandom(loremParagraphs);
+        const para2 = getRandom(loremParagraphs);
+
+        // Build the HTML strictly using tables and inline styles for email client compatibility
+        const emailHTML = `
+<!-- START QUICKERSITE TEMPLATE -->
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: ${scheme.bg}; margin: 0; padding: 20px 0;">
+    <tbody>
+        <tr>
+            <td align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; font-family: Arial, Helvetica, sans-serif; border: 1px solid #dddddd;">
+                    <!-- Header -->
+                    <tbody>
+                        <tr>
+                            <td align="center" bgcolor="${scheme.header}" style="padding: 30px 20px;">
+                                <h1 style="color: ${scheme.headerText}; font-size: 24px; margin: 0; font-weight: bold;">${headline}</h1>
+                            </td>
+                        </tr>
+                        <!-- Hero Image -->
+                        <tr>
+                            <td align="center" style="padding: 0;">
+                                <img src="${image}" alt="Newsletter Banner" width="600" style="display: block; max-width: 100%; height: auto; border: 0;" />
+                            </td>
+                        </tr>
+                        <!-- Body Content -->
+                        <tr>
+                            <td align="left" style="padding: 40px 30px; color: ${scheme.text}; font-size: 15px; line-height: 1.6;">
+                                <p style="margin-top: 0;"><strong>Dear [NL_NAME],</strong></p>
+                                <p style="margin-bottom: 20px;">${para1}</p>
+                                
+                                <!-- Inner Callout Table -->
+                                <table border="0" cellpadding="15" cellspacing="0" width="100%" style="background-color: #f9f9f9; border-left: 4px solid ${scheme.accent}; margin-bottom: 20px;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="color: ${scheme.text}; font-size: 14px;">
+                                                <em>"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam."</em>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <p style="margin-bottom: 30px;">${para2}</p>
+
+                                <!-- Button Table -->
+                                <table border="0" cellpadding="0" cellspacing="0" align="center">
+                                    <tbody>
+                                        <tr>
+                                            <td align="center" bgcolor="${scheme.accent}" style="border-radius: 4px;">
+                                                <a href="#" style="display: inline-block; padding: 12px 24px; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 14px;">Discover More</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Footer -->
+                        <tr>
+                            <td align="center" bgcolor="#eeeeee" style="padding: 20px 30px; font-size: 12px; color: #888888; border-top: 1px solid #dddddd;">
+                                <p style="margin: 0 0 10px 0;">You are receiving this email because you are subscribed to QuickerSite updates.</p>
+                                <p style="margin: 0;"><a href="[NL_UNSUBSCRIBELINK]" style="color: #888888; text-decoration: underline;">Unsubscribe from this list</a></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- END QUICKERSITE TEMPLATE -->`.trim();
+
+        // Update UI
+        document.getElementById('code-output').value = emailHTML;
+        document.getElementById('preview-container').innerHTML = emailHTML;
+    }
+
+    // Copy to Clipboard Logic
+    function copyCode() {
+        const copyText = document.getElementById('code-output');
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+        navigator.clipboard.writeText(copyText.value).then(() => {
+            const copyBtn = document.getElementById('copy-btn');
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = "Copied!";
+            copyBtn.classList.replace('btn-outline-success', 'btn-success');
+            setTimeout(() => {
+                copyBtn.innerText = originalText;
+                copyBtn.classList.replace('btn-success', 'btn-outline-success');
+            }, 2000);
+        });
+    }
+
+    // Event Listeners
+    document.getElementById('generate-btn').addEventListener('click', generateTemplate);
+    document.getElementById('copy-btn').addEventListener('click', copyCode);
+
+    // Generate initial template on load
+    generateTemplate();
+</script>
+</body>
+</html>
