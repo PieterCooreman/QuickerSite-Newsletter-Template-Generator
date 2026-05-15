@@ -4,6 +4,8 @@ A standalone, single-file tool that generates ready-to-paste HTML newsletter tem
 
 Open `index.html` in any browser, click **Generate New Template** until you see a design you like, then copy the HTML and paste it into the QuickerSite Newsletter editor. That's it.
 
+Or use it here: https://pietercooreman.github.io/QuickerSite-Newsletter-Template-Generator/
+
 ---
 
 ## Why this tool exists
