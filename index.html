@@ -1,228 +1,888 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickerSite Newsletter Generator</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #f8f9fa; padding-top: 2rem; }
-        #preview-container {
-            border: 1px solid #dee2e6;
-            background: #fff;
-            border-radius: 0.375rem;
-            padding: 1rem;
-            height: 600px;
-            overflow-y: auto;
-        }
-        #code-output {
-            font-family: monospace;
-            font-size: 0.875rem;
-            height: 400px;
-            resize: none;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickerSite Newsletter Template Generator</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+  }
+  header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2c5d8a 100%);
+    color: #fff;
+    padding: 24px 32px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  header h1 {
+    margin: 0 0 4px 0;
+    font-size: 22px;
+    letter-spacing: 0.3px;
+  }
+  header p {
+    margin: 0;
+    opacity: 0.85;
+    font-size: 13px;
+  }
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 1000px) {
+    .container { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafbfc;
+  }
+  .panel-header h2 {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  button {
+    border: 0;
+    cursor: pointer;
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  button:active { transform: translateY(1px); }
+  .btn-primary {
+    background: #2c5d8a;
+    color: #fff;
+  }
+  .btn-primary:hover { background: #244e75; }
+  .btn-secondary {
+    background: #e5e7eb;
+    color: #333;
+  }
+  .btn-secondary:hover { background: #d6d9de; }
+  .btn-success {
+    background: #2e8b57;
+    color: #fff;
+  }
+  .btn-success:hover { background: #267148; }
+  .preview-wrap {
+    background: #e9edf2;
+    padding: 20px;
+    overflow: auto;
+    flex: 1;
+    min-height: 600px;
+  }
+  /* Constrain only the visual preview to show the email's natural max width */
+  .preview-wrap > style + table,
+  .preview-wrap > table {
+    margin: 0 auto;
+  }
+  textarea#htmlOutput {
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+    border: 0;
+    padding: 16px;
+    font-family: "Consolas", "Monaco", monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    resize: none;
+    outline: none;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    flex: 1;
+  }
+  .copy-status {
+    font-size: 12px;
+    color: #2e8b57;
+    margin-left: 8px;
+    display: none;
+  }
+  .copy-status.show { display: inline; }
+  .controls-bar {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 0 24px 0 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto 0 auto;
+  }
+  .controls-bar-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 24px 0 24px;
+  }
+  .controls-bar-inner > div {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .info {
+    font-size: 13px;
+    color: #666;
+    margin-right: auto;
+  }
+  .info strong { color: #1e3a5f; }
+  footer {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    font-size: 12px;
+  }
+  footer a { color: #2c5d8a; text-decoration: none; }
+</style>
 </head>
 <body>
 
-<div class="container-fluid max-width-1200">
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="fw-bold text-primary">QuickerSite Newsletter Generator</h2>
-            <p class="text-muted">Generates 100% table-based templates with viewport-adaptive typography and native QuickerSite tags.</p>
-        </div>
-        <div class="col-auto text-end d-flex align-items-center">
-            <button id="generate-btn" class="btn btn-primary btn-lg me-2">Generate Random Template</button>
-            <button id="copy-btn" class="btn btn-outline-success btn-lg">Copy HTML Code</button>
-        </div>
-    </div>
+<header>
+  <h1>QuickerSite Newsletter Template Generator</h1>
+  <p>Generates random, email-client-safe HTML newsletter templates. Refresh for a new design. Copy the HTML into QuickerSite.</p>
+</header>
 
-    <div class="row">
-        <!-- Code Output Column -->
-        <div class="col-lg-5 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white fw-bold">
-                    Raw HTML (Ready to Paste)
-                </div>
-                <div class="card-body p-0">
-                    <textarea id="code-output" class="form-control border-0 p-3 w-100" readonly></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- Live Preview Column -->
-        <div class="col-lg-7 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white fw-bold">
-                    Live Preview (Mobile Responsive)
-                </div>
-                <div class="card-body bg-light">
-                    <!-- Added max-width to simulate mobile viewing better in the preview -->
-                    <div id="preview-container" class="shadow-sm mx-auto" style="max-width: 600px;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="controls-bar-inner">
+  <div>
+    <button class="btn-primary" onclick="generate()">&#8635; Generate New Template</button>
+    <button class="btn-secondary" onclick="document.getElementById('htmlOutput').select(); document.getElementById('htmlOutput').setSelectionRange(0, 999999)">Select HTML</button>
+    <button class="btn-success" onclick="copyHtml()">Copy HTML</button>
+    <span class="copy-status" id="copyStatus">Copied!</span>
+    <div class="info">Template: <strong id="templateInfo">-</strong></div>
+  </div>
 </div>
 
+<div class="container">
+  <div class="panel">
+    <div class="panel-header">
+      <h2>Preview</h2>
+    </div>
+    <div class="preview-wrap" id="previewWrap"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-header">
+      <h2>HTML Output (paste into QuickerSite)</h2>
+    </div>
+    <textarea id="htmlOutput" readonly spellcheck="false"></textarea>
+  </div>
+</div>
+
+<footer>
+  Standalone template generator for QuickerSite CMS &middot; Images by <a href="https://picsum.photos" target="_blank">Lorem Picsum</a>
+</footer>
+
 <script>
-    // Configuration Data for Randomization
-    const colorSchemes = [
-        { bg: "#f4f4f4", header: "#2c3e50", text: "#333333", accent: "#e74c3c", headerText: "#ffffff", footerBg: "#B8C3CF" },
-        { bg: "#eceff1", header: "#1976d2", text: "#263238", accent: "#ff9800", headerText: "#ffffff", footerBg: "#cfd8dc" },
-        { bg: "#f9fbfd", header: "#2e7d32", text: "#1b5e20", accent: "#c62828", headerText: "#ffffff", footerBg: "#c8e6c9" },
-        { bg: "#f3f4f6", header: "#4b5563", text: "#374151", accent: "#2563eb", headerText: "#ffffff", footerBg: "#e5e7eb" },
-        { bg: "#fff3e0", header: "#e65100", text: "#3e2723", accent: "#00bfa5", headerText: "#ffffff", footerBg: "#ffe0b2" }
-    ];
+/* ============================================================
+   QuickerSite Newsletter Template Generator
+   - Produces table-based HTML newsletters (no head/body)
+   - Inline styles for max email-client compatibility
+   - Responsive via <style> block + width attributes + fluid images
+   ============================================================ */
 
-    // High-quality, reliable Unsplash business/tech images
-    const unsplashImages = [
-        "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&h=250&q=80",
-        "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&h=250&q=80",
-        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&h=250&q=80",
-        "https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=600&h=250&q=80",
-        "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&h=250&q=80"
-    ];
+/* ---------- Color palettes ---------- */
+const palettes = [
+  { name:"Ocean Blue",   header:"#1e3a5f", accent:"#3a7ca5", soft:"#d8e3ec", bg:"#f4f7fa", text:"#1f2937", muted:"#6b7280", btn:"#3a7ca5", footer:"#1e3a5f" },
+  { name:"Forest Green", header:"#2d5a3d", accent:"#4a8b5f", soft:"#dceadf", bg:"#f3f7f4", text:"#1f2a22", muted:"#5c6b60", btn:"#4a8b5f", footer:"#2d5a3d" },
+  { name:"Sunset Coral", header:"#a83e2e", accent:"#e07856", soft:"#fbe1d7", bg:"#fdf6f3", text:"#3b1d17", muted:"#7a5950", btn:"#e07856", footer:"#a83e2e" },
+  { name:"Royal Purple", header:"#4a2c6b", accent:"#7d5ba6", soft:"#e6dff0", bg:"#f7f4fa", text:"#251735", muted:"#5e4d72", btn:"#7d5ba6", footer:"#4a2c6b" },
+  { name:"Charcoal",     header:"#2b2b2b", accent:"#c9a36a", soft:"#ececec", bg:"#f5f5f5", text:"#1c1c1c", muted:"#6b6b6b", btn:"#c9a36a", footer:"#2b2b2b" },
+  { name:"Teal Mint",    header:"#0f5e6e", accent:"#4ab3a7", soft:"#d4ece8", bg:"#f1f7f6", text:"#103840", muted:"#5e7d80", btn:"#4ab3a7", footer:"#0f5e6e" },
+  { name:"Burgundy",     header:"#6b1f2f", accent:"#a83e54", soft:"#f1d9de", bg:"#faf3f4", text:"#2d0e15", muted:"#7a4d54", btn:"#a83e54", footer:"#6b1f2f" },
+  { name:"Slate Navy",   header:"#1f2a44", accent:"#5a7ab8", soft:"#dde4f0", bg:"#f4f6fa", text:"#1a2138", muted:"#586176", btn:"#5a7ab8", footer:"#1f2a44" },
+  { name:"Warm Sand",    header:"#7a5a3a", accent:"#c89a6a", soft:"#f0e4d3", bg:"#faf5ed", text:"#3a2a18", muted:"#7a6a55", btn:"#c89a6a", footer:"#7a5a3a" },
+  { name:"Modern Black", header:"#111111", accent:"#e63946", soft:"#f1f1f1", bg:"#ffffff", text:"#111111", muted:"#666666", btn:"#e63946", footer:"#111111" }
+];
 
-    const headlines = [
-        "Monthly Digest & Updates",
-        "Important News from Our Team",
-        "Your Latest Insider Insights",
-        "New Features & Enhancements",
-        "QuickerSite Community Newsletter"
-    ];
+/* ---------- Font stacks (email-safe) ---------- */
+const fontStacks = [
+  "Arial, Helvetica, sans-serif",
+  "Verdana, Geneva, sans-serif",
+  "Georgia, 'Times New Roman', serif",
+  "'Trebuchet MS', Tahoma, sans-serif",
+  "Tahoma, Verdana, sans-serif",
+  "'Lucida Sans Unicode', 'Lucida Grande', sans-serif"
+];
 
-    const loremParagraphs = [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor."
-    ];
+/* ---------- Lorem Ipsum content ---------- */
+const headlines = [
+  "Discover What's New This Season",
+  "Fresh Insights, Delivered Monthly",
+  "Big News From Our Team",
+  "Stories Worth Reading",
+  "The Latest Updates Just for You",
+  "Inspiration for the Weeks Ahead",
+  "Curated Highlights of the Month",
+  "Lorem Ipsum Dolor Sit Amet",
+  "Tales From Our Recent Adventures",
+  "A Closer Look at What's Changing"
+];
 
-    // Utility: Pick random item from array
-    function getRandom(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-    }
+const greetings = [
+  "Dear [NL_NAME],",
+  "Hello [NL_NAME],",
+  "Hi [NL_NAME],",
+  "Welcome back, [NL_NAME],",
+  "Greetings [NL_NAME],"
+];
 
-    // Core Generation Logic
-    function generateTemplate() {
-        const scheme = getRandom(colorSchemes);
-        const image = getRandom(unsplashImages);
-        const headline = getRandom(headlines);
-        const para1 = getRandom(loremParagraphs);
-        const para2 = getRandom(loremParagraphs);
+const introParagraphs = [
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu nisi sed mauris dignissim faucibus. Curabitur fermentum erat eu felis pharetra, sit amet pulvinar sapien tincidunt.",
+  "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi.",
+  "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint.",
+  "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
+  "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur quis autem vel eum iure."
+];
 
-        // Responsive HTML Email Output
-        const emailHTML = `
-<!-- START QUICKERSITE TEMPLATE -->
-<style type="text/css">
-    /* Responsive styles for mobile clients that support embedded CSS */
-    @media screen and (max-width: 600px) {
-        .email-wrapper { width: 100% !important; padding: 10px !important; }
-        .fluid-table { width: 100% !important; max-width: 100% !important; }
-        .fluid-h1 { font-size: 26px !important; line-height: 1.3 !important; }
-        .fluid-p { font-size: 16px !important; line-height: 1.6 !important; }
-        .fluid-btn { display: block !important; width: 80% !important; margin: 0 auto !important; text-align: center !important; font-size: 16px !important; padding: 15px !important; }
-        .fluid-padding { padding: 30px 20px !important; }
-    }
-</style>
+const bodyParagraphs = [
+  "Vivamus tristique odio sit amet velit semper, eu posuere turpis interdum. Cras egestas purus a ligula scelerisque, in pulvinar nulla porta. Nullam non nibh purus.",
+  "Mauris fringilla, sapien at posuere lobortis, urna nibh tempor justo, ut auctor magna lorem at libero. Quisque vehicula leo ac libero ultrices, et tristique enim feugiat.",
+  "Phasellus consequat enim eu dolor consequat, vitae elementum justo facilisis. Donec maximus nibh nec lectus blandit, in tempor justo bibendum. Suspendisse potenti.",
+  "Integer fringilla, lorem at varius mattis, lectus tellus dignissim mi, ac venenatis nisi sapien id justo. Praesent vel libero et velit malesuada euismod.",
+  "Aliquam erat volutpat. In hac habitasse platea dictumst. Donec tincidunt mauris a augue dictum, ut faucibus mauris facilisis. Etiam viverra eros et ligula tincidunt."
+];
 
-<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" class="email-wrapper" style="background-color: ${scheme.bg}; margin: 0; padding: 20px 0;">
-    <tbody>
+const articleTitles = [
+  "Consectetur Adipiscing Elit",
+  "Sed Do Eiusmod Tempor",
+  "Magna Aliqua Ut Enim",
+  "Quis Nostrud Exercitation",
+  "Ullamco Laboris Nisi",
+  "Duis Aute Irure Dolor",
+  "Excepteur Sint Occaecat",
+  "Voluptate Velit Esse",
+  "Cupidatat Non Proident",
+  "Sunt In Culpa Qui Officia"
+];
+
+const ctaTexts = [
+  "Read More", "Learn More", "Discover Now", "View Article", "Get Started",
+  "Find Out More", "Explore", "Continue Reading", "See Details", "Take a Look"
+];
+
+const signatures = [
+  { name:"Alex Johnson",  title:"Editor in Chief" },
+  { name:"Maria Garcia",  title:"Marketing Director" },
+  { name:"Sam Thompson",  title:"Content Manager" },
+  { name:"Jordan Lee",    title:"Communications Lead" },
+  { name:"Taylor Morgan", title:"Newsletter Editor" }
+];
+
+/* ---------- Image seeds ----------
+   We use picsum.photos (https://picsum.photos) which serves real,
+   high-quality photographs (sourced from Unsplash) at any size.
+   Unsplash's old source.unsplash.com endpoint was discontinued in 2024,
+   so picsum is currently the most reliable free, hot-linkable source
+   for random photographs in newsletters.
+   Each seed produces a different, stable image, so we randomize seeds
+   for variety on every regeneration.
+*/
+const imageSeeds = [
+  "ocean","forest","mountain","city","sunrise","sunset","desert","river",
+  "harbor","skyline","fields","valley","autumn","spring","studio","cafe",
+  "workshop","library","gallery","market","journey","horizon","meadow",
+  "village","bridge","harbor2","trail","summit","coastline","garden",
+  "atelier","loft","plaza","terrace","veranda","corridor","arches","beacon",
+  "lantern","compass","voyage","expedition","passage","crossroad","outlook",
+  "vista","panorama","silhouette","reflection","texture","minimal","mono",
+  "warmth","stillness","motion","clarity","whisper","echo","glimmer","drift"
+];
+
+/* ---------- Helpers ---------- */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function pickN(arr, n){
+  const copy = arr.slice();
+  const out = [];
+  for (let i=0; i<n && copy.length; i++){
+    out.push(copy.splice(Math.floor(Math.random()*copy.length),1)[0]);
+  }
+  return out;
+}
+function rndInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+/* Random photo URL via picsum.photos (Lorem Picsum).
+   Using a seed + a random number gives a stable image that loads
+   instantly with the requested dimensions. */
+function photoImg(w, h){
+  const seed = pick(imageSeeds) + "-" + Math.floor(Math.random()*100000);
+  return `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`;
+}
+
+/* Build a paragraph block of N paragraphs */
+function paragraphs(n, font, color){
+  let html = "";
+  for (let i=0;i<n;i++){
+    html += `<p style="margin:0 0 14px 0; font-family:${font}; font-size:14px; line-height:1.6; color:${color};">${pick(bodyParagraphs)}</p>`;
+  }
+  return html;
+}
+
+/* ---------- TEMPLATE 1: Classic Single Column with Hero ---------- */
+function template1(p, font){
+  const hero = photoImg(580, 280);
+  const headline = pick(headlines);
+  const greet = pick(greetings);
+  const sig = pick(signatures);
+  const cta = pick(ctaTexts);
+  return `
+<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:#ffffff; font-family:${font};">
+  <tr>
+    <td bgcolor="${p.header}" style="padding:24px 28px; font-family:${font}; color:#ffffff; font-size:22px; font-weight:bold; letter-spacing:0.5px;">
+      QuickerSite Newsletter
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:0; font-size:0; line-height:0;">
+      <img src="${hero}" alt="" width="600" class="qs-fluid" style="display:block; width:100%; max-width:600px; height:auto; border:0;" />
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.soft}" style="padding:18px 28px; font-family:${font}; color:${p.header}; font-size:18px; font-weight:bold;">
+      ${headline}
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#ffffff" style="padding:24px 28px; font-family:${font}; color:${p.text};">
+      <p style="margin:0 0 14px 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text};">${greet}</p>
+      <p style="margin:0 0 14px 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text};">${pick(introParagraphs)}</p>
+      ${paragraphs(2, font, p.text)}
+      <table cellpadding="0" cellspacing="0" border="0" style="margin:18px 0;">
         <tr>
-            <td align="center">
-                <!-- Using max-width for fluid behavior on mobile, falling back to width="600" for legacy clients -->
-                <table border="0" cellpadding="0" cellspacing="0" width="600" class="fluid-table" style="background-color: #ffffff; font-family: Verdana, Arial, sans-serif; border: 6px solid #FFFFFF; max-width: 600px; width: 100%;">
-                    <!-- Header -->
-                    <tbody>
-                        <tr>
-                            <td align="center" bgcolor="${scheme.header}" class="fluid-padding" style="padding: 40px 20px; border-bottom: 6px solid #FFFFFF;">
-                                <h1 class="fluid-h1" style="color: ${scheme.headerText}; font-size: 28px; margin: 0; font-weight: bold; line-height: 1.2;"><em><strong>${headline}</strong></em></h1>
-                            </td>
-                        </tr>
-                        <!-- Hero Image -->
-                        <tr>
-                            <td align="center" style="padding: 0; border-bottom: 6px solid #FFFFFF;">
-                                <img src="${image}" alt="Newsletter Banner" width="600" style="display: block; width: 100%; max-width: 600px; height: auto; border: 0;" />
-                            </td>
-                        </tr>
-                        <!-- Body Content -->
-                        <tr>
-                            <td align="left" bgcolor="#efefef" class="fluid-padding" style="padding: 40px 30px; color: ${scheme.text}; font-size: 16px; line-height: 1.6; border-bottom: 6px solid #FFFFFF;">
-                                <p class="fluid-p" style="margin-top: 0;"><strong>Dear [NL_NAME],</strong></p>
-                                <p class="fluid-p" style="margin-bottom: 25px;">${para1}</p>
-                                
-                                <!-- Inner Callout Table -->
-                                <table border="0" cellpadding="20" cellspacing="0" width="100%" style="background-color: #ffffff; border-left: 4px solid ${scheme.accent}; margin-bottom: 25px;">
-                                    <tbody>
-                                        <tr>
-                                            <td class="fluid-p" style="color: ${scheme.text}; font-size: 15px; line-height: 1.5;">
-                                                <em>"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam."</em>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <p class="fluid-p" style="margin-bottom: 35px;">${para2}</p>
-
-                                <!-- Button Table -->
-                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                    <tbody>
-                                        <tr>
-                                            <td align="center">
-                                                <a href="#" class="fluid-btn" style="display: inline-block; padding: 14px 28px; background-color: ${scheme.accent}; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px;">Discover More</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                
-                                <p class="fluid-p" style="margin-top: 35px; margin-bottom: 0;">
-                                    Best regards,<br />
-                                    MyName
-                                </p>
-                            </td>
-                        </tr>
-                        <!-- Footer / Unsubscribe Tag (Raw Text) -->
-                        <tr>
-                            <td align="center" bgcolor="${scheme.footerBg}" class="fluid-padding" style="padding: 15px; font-size: 11px; color: #555555; text-align: center;">
-                                [NL_UNSUBSCRIBELINK]
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
+          <td bgcolor="${p.btn}" style="border-radius:4px;">
+            <a href="#" style="display:inline-block; padding:12px 26px; font-family:${font}; font-size:14px; color:#ffffff; text-decoration:none; font-weight:bold;">${cta} &raquo;</a>
+          </td>
         </tr>
-    </tbody>
-</table>
-<!-- END QUICKERSITE TEMPLATE -->`.trim();
+      </table>
+      <p style="margin:18px 0 0 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text};">Best regards,<br/>
+        <strong>${sig.name}</strong><br/>
+        <span style="font-size:12px; color:${p.muted};"><em>${sig.title}</em></span>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.footer}" style="padding:16px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+      [NL_UNSUBSCRIBELINK]
+    </td>
+  </tr>
+</table>`;
+}
 
-        // Update UI
-        document.getElementById('code-output').value = emailHTML;
-        document.getElementById('preview-container').innerHTML = emailHTML;
+/* ---------- TEMPLATE 2: Two-Column Image + Text Article ---------- */
+function template2(p, font){
+  const headline = pick(headlines);
+  const greet = pick(greetings);
+  const sig = pick(signatures);
+  const articles = pickN(articleTitles, 2);
+  const imgs = [
+    photoImg(260, 180),
+    photoImg(260, 180)
+  ];
+  return `
+<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:${p.bg}; font-family:${font};">
+  <tr>
+    <td bgcolor="${p.header}" style="padding:30px 28px; font-family:${font}; color:#ffffff; text-align:center;">
+      <div style="font-size:24px; font-weight:bold; letter-spacing:1px;">QUICKERSITE NEWSLETTER</div>
+      <div style="font-size:12px; opacity:0.85; margin-top:6px;">${headline}</div>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#ffffff" style="padding:24px 28px; font-family:${font}; color:${p.text};">
+      <p style="margin:0 0 14px 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text};">${greet}</p>
+      <p style="margin:0 0 18px 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text};">${pick(introParagraphs)}</p>
+
+      <table cellpadding="0" cellspacing="0" border="0" width="100%" class="qs-stack">
+        <tr>
+          <td class="qs-col" valign="top" width="50%" style="width:50%; padding:0 10px 0 0;">
+            <img src="${imgs[0]}" alt="" width="280" class="qs-fluid" style="display:block; width:100%; max-width:280px; height:auto; border:0; border-radius:3px;" />
+            <h3 style="margin:12px 0 6px 0; font-family:${font}; font-size:16px; color:${p.header};">${articles[0]}</h3>
+            <p style="margin:0 0 8px 0; font-family:${font}; font-size:13px; line-height:1.55; color:${p.text};">${pick(bodyParagraphs)}</p>
+            <a href="#" style="font-family:${font}; font-size:13px; color:${p.accent}; text-decoration:none; font-weight:bold;">${pick(ctaTexts)} &rarr;</a>
+          </td>
+          <td class="qs-col" valign="top" width="50%" style="width:50%; padding:0 0 0 10px;">
+            <img src="${imgs[1]}" alt="" width="280" class="qs-fluid" style="display:block; width:100%; max-width:280px; height:auto; border:0; border-radius:3px;" />
+            <h3 style="margin:12px 0 6px 0; font-family:${font}; font-size:16px; color:${p.header};">${articles[1]}</h3>
+            <p style="margin:0 0 8px 0; font-family:${font}; font-size:13px; line-height:1.55; color:${p.text};">${pick(bodyParagraphs)}</p>
+            <a href="#" style="font-family:${font}; font-size:13px; color:${p.accent}; text-decoration:none; font-weight:bold;">${pick(ctaTexts)} &rarr;</a>
+          </td>
+        </tr>
+      </table>
+
+      <p style="margin:24px 0 0 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text}; border-top:1px solid ${p.soft}; padding-top:16px;">
+        Best regards,<br/>
+        <strong>${sig.name}</strong><br/>
+        <span style="font-size:12px; color:${p.muted};"><em>${sig.title}</em></span>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.footer}" style="padding:16px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+      [NL_UNSUBSCRIBELINK]
+    </td>
+  </tr>
+</table>`;
+}
+
+/* ---------- TEMPLATE 3: Magazine-style with Sidebar Image ---------- */
+function template3(p, font){
+  const headline = pick(headlines);
+  const greet = pick(greetings);
+  const sig = pick(signatures);
+  const sideImg = photoImg(200, 380);
+  return `
+<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:#ffffff; font-family:${font}; border:1px solid ${p.soft};">
+  <tr>
+    <td bgcolor="${p.header}" style="padding:22px 28px; font-family:${font};">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="font-family:${font}; color:#ffffff; font-size:20px; font-weight:bold;">QuickerSite</td>
+          <td style="font-family:${font}; color:#ffffff; font-size:11px; text-align:right; opacity:0.9;">NEWSLETTER &middot; ISSUE #${rndInt(10,99)}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.accent}" style="padding:18px 28px; font-family:${font}; color:#ffffff; font-size:18px; font-weight:bold;">
+      ${headline}
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:0;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" class="qs-stack">
+        <tr>
+          <td class="qs-col" valign="top" width="35%" style="width:35%; padding:0; font-size:0;">
+            <img src="${sideImg}" alt="" width="210" class="qs-fluid" style="display:block; width:100%; max-width:210px; height:auto; border:0;" />
+          </td>
+          <td class="qs-col" valign="top" width="65%" style="width:65%; padding:24px 28px; font-family:${font}; color:${p.text};">
+            <p style="margin:0 0 12px 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text};">${greet}</p>
+            ${paragraphs(3, font, p.text)}
+            <p style="margin:0;">
+              <a href="#" style="font-family:${font}; font-size:13px; color:${p.accent}; text-decoration:none; font-weight:bold;">${pick(ctaTexts)} &rarr;</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.soft}" style="padding:16px 28px; font-family:${font}; font-size:13px; color:${p.text};">
+      Best regards,<br/>
+      <strong>${sig.name}</strong>, <em style="color:${p.muted};">${sig.title}</em>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.footer}" style="padding:14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+      [NL_UNSUBSCRIBELINK]
+    </td>
+  </tr>
+</table>`;
+}
+
+/* ---------- TEMPLATE 4: Bordered Cards Style (QS original-inspired) ---------- */
+function template4(p, font){
+  const sig = pick(signatures);
+  const hero = photoImg(540, 200);
+  return `
+<table align="center" cellpadding="20" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; border-bottom:${p.bg} 6px solid; border-left:${p.bg} 6px solid; border-top:${p.bg} 6px solid; border-right:${p.bg} 6px solid; font-family:${font}; font-size:13px;">
+  <tr>
+    <td bgcolor="${p.header}" height="140" style="border-bottom:${p.bg} 6px solid; text-align:right; font-family:${font}; color:#ffffff; font-size:18px; padding:20px;">
+      <em><strong>QuickerSite Newsletter</strong></em><br/>
+      <span style="font-size:11px; opacity:0.85;">${pick(headlines)}</span>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#ffffff" style="border-bottom:${p.bg} 6px solid; padding:0; font-size:0;">
+      <img src="${hero}" alt="" width="600" class="qs-fluid" style="display:block; width:100%; max-width:600px; height:auto; border:0;" />
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.soft}" style="border-bottom:${p.bg} 6px solid; font-family:${font}; font-size:13px; color:${p.text}; padding:20px;">
+      <p style="margin:0 0 12px 0; font-family:${font}; font-size:13px; line-height:1.6; color:${p.text};">${pick(greetings)}</p>
+      ${paragraphs(2, font, p.text)}
+      <ul style="margin:8px 0 12px 18px; padding:0; font-family:${font}; font-size:13px; line-height:1.7; color:${p.text};">
+        <li>${pick(bodyParagraphs)}</li>
+        <li>${pick(bodyParagraphs)}</li>
+        <li>${pick(bodyParagraphs)}</li>
+      </ul>
+      <p style="margin:12px 0 0 0; font-family:${font}; font-size:13px; line-height:1.6; color:${p.text};">
+        Best regards,<br/>
+        <strong>${sig.name}</strong><br/>
+        <span style="font-size:11px;"><em>${sig.title}</em></span>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.accent}" style="text-align:center; font-family:${font}; font-size:11px; color:#ffffff; padding:14px;">
+      [NL_UNSUBSCRIBELINK]
+    </td>
+  </tr>
+</table>`;
+}
+
+/* ---------- TEMPLATE 5: Featured Article + 3 Highlights ---------- */
+function template5(p, font){
+  const heroImg = photoImg(580, 240);
+  const sig = pick(signatures);
+  const highlights = pickN(articleTitles, 3);
+  const thumbs = [
+    photoImg(160, 110),
+    photoImg(160, 110),
+    photoImg(160, 110)
+  ];
+  let highlightsHtml = "";
+  for (let i=0;i<3;i++){
+    highlightsHtml += `
+      <td class="qs-col" valign="top" width="33%" style="width:33%; padding:0 6px;">
+        <img src="${thumbs[i]}" alt="" width="180" class="qs-fluid" style="display:block; width:100%; max-width:180px; height:auto; border:0; border-radius:3px;" />
+        <h4 style="margin:10px 0 4px 0; font-family:${font}; font-size:13px; color:${p.header};">${highlights[i]}</h4>
+        <p style="margin:0; font-family:${font}; font-size:12px; line-height:1.5; color:${p.text};">${pick(bodyParagraphs).substring(0,90)}...</p>
+      </td>`;
+  }
+  return `
+<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:#ffffff; font-family:${font};">
+  <tr>
+    <td bgcolor="${p.header}" style="padding:20px 28px; font-family:${font}; color:#ffffff; font-size:20px; font-weight:bold;">
+      QuickerSite Newsletter
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:0; font-size:0;">
+      <img src="${heroImg}" alt="" width="600" class="qs-fluid" style="display:block; width:100%; max-width:600px; height:auto; border:0;" />
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#ffffff" style="padding:24px 28px; font-family:${font}; color:${p.text};">
+      <h2 style="margin:0 0 12px 0; font-family:${font}; font-size:22px; color:${p.header}; line-height:1.25;">${pick(headlines)}</h2>
+      <p style="margin:0 0 14px 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text};">${pick(greetings)}</p>
+      ${paragraphs(2, font, p.text)}
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td bgcolor="${p.btn}" style="border-radius:4px;">
+            <a href="#" style="display:inline-block; padding:11px 24px; font-family:${font}; font-size:13px; color:#ffffff; text-decoration:none; font-weight:bold;">${pick(ctaTexts)}</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.soft}" style="padding:22px 22px; font-family:${font};">
+      <h3 style="margin:0 0 14px 0; font-family:${font}; font-size:15px; color:${p.header}; text-transform:uppercase; letter-spacing:0.6px;">Also In This Issue</h3>
+      <table cellpadding="0" cellspacing="0" border="0" width="100%" class="qs-stack">
+        <tr>
+          ${highlightsHtml}
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#ffffff" style="padding:18px 28px; font-family:${font}; font-size:13px; color:${p.text}; border-top:1px solid ${p.soft};">
+      Best regards,<br/>
+      <strong>${sig.name}</strong><br/>
+      <span style="font-size:11px; color:${p.muted};"><em>${sig.title}</em></span>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.footer}" style="padding:14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+      [NL_UNSUBSCRIBELINK]
+    </td>
+  </tr>
+</table>`;
+}
+
+/* ---------- TEMPLATE 6: Minimal / Editorial ---------- */
+function template6(p, font){
+  const sig = pick(signatures);
+  return `
+<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:#ffffff; font-family:${font};">
+  <tr>
+    <td style="padding:32px 32px 12px 32px; font-family:${font}; text-align:center; border-bottom:2px solid ${p.header};">
+      <div style="font-family:${font}; font-size:11px; letter-spacing:3px; color:${p.muted}; text-transform:uppercase;">QuickerSite &middot; Issue ${rndInt(10,99)}</div>
+      <h1 style="margin:10px 0 14px 0; font-family:${font}; font-size:26px; color:${p.header}; font-weight:normal; line-height:1.3;">${pick(headlines)}</h1>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:28px 32px; font-family:${font}; color:${p.text};">
+      <p style="margin:0 0 16px 0; font-family:${font}; font-size:15px; line-height:1.7; color:${p.text};">${pick(greetings)}</p>
+      ${paragraphs(4, font, p.text)}
+      <p style="margin:24px 0 0 0; text-align:center;">
+        <a href="#" style="display:inline-block; padding:10px 28px; font-family:${font}; font-size:12px; color:${p.header}; text-decoration:none; font-weight:bold; letter-spacing:2px; text-transform:uppercase; border:2px solid ${p.header};">${pick(ctaTexts)}</a>
+      </p>
+      <p style="margin:30px 0 0 0; font-family:${font}; font-size:13px; line-height:1.6; color:${p.muted}; text-align:center; border-top:1px solid ${p.soft}; padding-top:18px;">
+        <em>${sig.name}</em><br/>
+        ${sig.title}
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:16px 32px; text-align:center; font-family:${font}; font-size:10px; color:${p.muted}; letter-spacing:1px; border-top:1px solid ${p.soft};">
+      [NL_UNSUBSCRIBELINK]
+    </td>
+  </tr>
+</table>`;
+}
+
+/* ---------- TEMPLATE 7: Bold Banner with Stats / Promo ---------- */
+function template7(p, font){
+  const heroImg = photoImg(580, 220);
+  const sig = pick(signatures);
+  return `
+<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:${p.bg}; font-family:${font};">
+  <tr>
+    <td bgcolor="${p.header}" style="padding:18px 28px; font-family:${font}; color:#ffffff;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="font-size:16px; font-weight:bold;">QUICKERSITE</td>
+          <td style="font-size:11px; text-align:right; opacity:0.85;">${new Date().toLocaleDateString('en-US',{month:'long', year:'numeric'})}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:0; font-size:0; position:relative;">
+      <img src="${heroImg}" alt="" width="600" class="qs-fluid" style="display:block; width:100%; max-width:600px; height:auto; border:0;" />
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.accent}" style="padding:22px 28px; font-family:${font}; color:#ffffff; text-align:center;">
+      <div style="font-size:22px; font-weight:bold; margin-bottom:6px;">${pick(headlines)}</div>
+      <div style="font-size:13px; opacity:0.92;">${pick(bodyParagraphs).substring(0,120)}...</div>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#ffffff" style="padding:24px 28px; font-family:${font}; color:${p.text};">
+      <p style="margin:0 0 14px 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text};">${pick(greetings)}</p>
+      ${paragraphs(2, font, p.text)}
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.soft}" style="padding:22px 28px; font-family:${font};">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" class="qs-stack">
+        <tr>
+          <td class="qs-col" valign="top" width="33%" style="text-align:center; padding:6px;">
+            <div style="font-family:${font}; font-size:30px; font-weight:bold; color:${p.header};">${rndInt(50,999)}+</div>
+            <div style="font-family:${font}; font-size:11px; color:${p.muted}; text-transform:uppercase; letter-spacing:1px;">Lorem Ipsum</div>
+          </td>
+          <td class="qs-col" valign="top" width="33%" style="text-align:center; padding:6px;">
+            <div style="font-family:${font}; font-size:30px; font-weight:bold; color:${p.header};">${rndInt(10,99)}K</div>
+            <div style="font-family:${font}; font-size:11px; color:${p.muted}; text-transform:uppercase; letter-spacing:1px;">Dolor Sit</div>
+          </td>
+          <td class="qs-col" valign="top" width="34%" style="text-align:center; padding:6px;">
+            <div style="font-family:${font}; font-size:30px; font-weight:bold; color:${p.header};">${rndInt(2,99)}%</div>
+            <div style="font-family:${font}; font-size:11px; color:${p.muted}; text-transform:uppercase; letter-spacing:1px;">Amet Consectetur</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#ffffff" style="padding:24px 28px; text-align:center;">
+      <table cellpadding="0" cellspacing="0" border="0" align="center">
+        <tr>
+          <td bgcolor="${p.btn}" style="border-radius:4px;">
+            <a href="#" style="display:inline-block; padding:12px 30px; font-family:${font}; font-size:14px; color:#ffffff; text-decoration:none; font-weight:bold;">${pick(ctaTexts)} &raquo;</a>
+          </td>
+        </tr>
+      </table>
+      <p style="margin:20px 0 0 0; font-family:${font}; font-size:13px; color:${p.text}; line-height:1.6;">
+        Best regards,<br/>
+        <strong>${sig.name}</strong>, <em style="color:${p.muted};">${sig.title}</em>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.footer}" style="padding:14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+      [NL_UNSUBSCRIBELINK]
+    </td>
+  </tr>
+</table>`;
+}
+
+/* ---------- TEMPLATE 8: List Newsletter (Stories with thumbnails left) ---------- */
+function template8(p, font){
+  const sig = pick(signatures);
+  const stories = pickN(articleTitles, 3);
+  const thumbs = [
+    photoImg(140, 100),
+    photoImg(140, 100),
+    photoImg(140, 100)
+  ];
+  let rows = "";
+  for (let i=0;i<3;i++){
+    rows += `
+    <tr>
+      <td colspan="2" style="padding:0; line-height:0; font-size:0;">
+        ${i>0 ? `<div style="height:1px; background:${p.soft}; line-height:1px; font-size:1px;">&nbsp;</div>` : ""}
+      </td>
+    </tr>
+    <tr>
+      <td class="qs-col" valign="top" width="28%" style="width:28%; padding:18px 14px 18px 0;">
+        <img src="${thumbs[i]}" alt="" width="160" class="qs-fluid" style="display:block; width:100%; max-width:160px; height:auto; border:0; border-radius:3px;" />
+      </td>
+      <td class="qs-col" valign="top" width="72%" style="width:72%; padding:18px 0;">
+        <h3 style="margin:0 0 6px 0; font-family:${font}; font-size:15px; color:${p.header};">${stories[i]}</h3>
+        <p style="margin:0 0 8px 0; font-family:${font}; font-size:13px; line-height:1.55; color:${p.text};">${pick(bodyParagraphs)}</p>
+        <a href="#" style="font-family:${font}; font-size:12px; color:${p.accent}; text-decoration:none; font-weight:bold;">${pick(ctaTexts)} &rarr;</a>
+      </td>
+    </tr>`;
+  }
+  return `
+<table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:#ffffff; font-family:${font};">
+  <tr>
+    <td bgcolor="${p.header}" style="padding:24px 28px; text-align:center; font-family:${font};">
+      <div style="color:#ffffff; font-size:22px; font-weight:bold; letter-spacing:1px;">QuickerSite Digest</div>
+      <div style="color:#ffffff; opacity:0.8; font-size:11px; margin-top:4px; letter-spacing:2px; text-transform:uppercase;">${pick(headlines)}</div>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:24px 28px 8px 28px; font-family:${font}; color:${p.text};">
+      <p style="margin:0 0 14px 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text};">${pick(greetings)}</p>
+      <p style="margin:0 0 8px 0; font-family:${font}; font-size:14px; line-height:1.6; color:${p.text};">${pick(introParagraphs)}</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:0 28px;">
+      <table cellpadding="0" cellspacing="0" border="0" width="100%" class="qs-stack">
+        ${rows}
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:16px 28px 24px 28px; font-family:${font}; color:${p.text}; border-top:1px solid ${p.soft};">
+      <p style="margin:14px 0 0 0; font-family:${font}; font-size:13px; line-height:1.6;">
+        Best regards,<br/>
+        <strong>${sig.name}</strong><br/>
+        <span style="font-size:11px; color:${p.muted};"><em>${sig.title}</em></span>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="${p.footer}" style="padding:14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+      [NL_UNSUBSCRIBELINK]
+    </td>
+  </tr>
+</table>`;
+}
+
+/* ---------- Build complete output ---------- */
+/* We include a small <style> block before the table for responsive behavior.
+   Gmail/Outlook will ignore unknown CSS but inline styles always apply.
+   On mobile clients that DO support media queries (most do, except some Outlook),
+   columns collapse to full width. */
+function wrapWithResponsiveStyles(tableHtml){
+  const responsiveCSS = `
+<style type="text/css">
+  /* Reset */
+  body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+  table, td { mso-table-lspace:0pt; mso-table-rspace:0pt; }
+  img { -ms-interpolation-mode:bicubic; border:0; outline:none; text-decoration:none; }
+  /* Outer table is fluid by default (inline width:100%, max-width:600px).
+     On narrow screens, collapse multi-column rows into single columns. */
+  @media only screen and (max-width:520px){
+    table.qs-stack, table.qs-stack > tbody > tr > td.qs-col {
+      display:block !important;
+      width:100% !important;
+      padding:0 0 16px 0 !important;
     }
+    img.qs-fluid { width:100% !important; height:auto !important; max-width:100% !important; }
+  }
+</style>
+`;
+  /* Wrap the newsletter table in a spacer table that provides top/bottom
+     breathing room. Using a table (not <div> margin) because Outlook
+     desktop ignores margins on top-level block elements. The spacer table
+     itself has no background so QuickerSite's body-background shows
+     through both above and below the newsletter. */
+  const spacerWrap =
+    `<table align="center" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+  <tr><td height="20" style="height:20px; line-height:20px; font-size:20px;">&nbsp;</td></tr>
+  <tr><td align="center" style="padding:0;">
+    ${tableHtml.trim()}
+  </td></tr>
+  <tr><td height="20" style="height:20px; line-height:20px; font-size:20px;">&nbsp;</td></tr>
+</table>`;
+  return responsiveCSS + spacerWrap;
+}
 
-    // Copy to Clipboard Logic
-    function copyCode() {
-        const copyText = document.getElementById('code-output');
-        copyText.select();
-        copyText.setSelectionRange(0, 99999); // For mobile devices
-        navigator.clipboard.writeText(copyText.value).then(() => {
-            const copyBtn = document.getElementById('copy-btn');
-            const originalText = copyBtn.innerText;
-            copyBtn.innerText = "Copied!";
-            copyBtn.classList.replace('btn-outline-success', 'btn-success');
-            setTimeout(() => {
-                copyBtn.innerText = originalText;
-                copyBtn.classList.replace('btn-success', 'btn-outline-success');
-            }, 2000);
-        });
-    }
+/* ---------- Main generator ---------- */
+const templates = [
+  { name:"Classic Hero",            fn:template1 },
+  { name:"Two-Column Articles",     fn:template2 },
+  { name:"Magazine Sidebar",        fn:template3 },
+  { name:"Bordered Cards",          fn:template4 },
+  { name:"Featured + Highlights",   fn:template5 },
+  { name:"Minimal Editorial",       fn:template6 },
+  { name:"Bold Banner with Stats",  fn:template7 },
+  { name:"Story Digest",            fn:template8 }
+];
 
-    // Event Listeners
-    document.getElementById('generate-btn').addEventListener('click', generateTemplate);
-    document.getElementById('copy-btn').addEventListener('click', copyCode);
+function generate(){
+  const palette = pick(palettes);
+  const font = pick(fontStacks);
+  const tpl = pick(templates);
+  const tableHtml = tpl.fn(palette, font);
+  const full = wrapWithResponsiveStyles(tableHtml);
 
-    // Generate initial template on load
-    generateTemplate();
+  // Update info
+  document.getElementById('templateInfo').textContent = `${tpl.name} - ${palette.name}`;
+
+  // Update preview
+  document.getElementById('previewWrap').innerHTML = full;
+
+  // Update output textarea (formatted nicely)
+  document.getElementById('htmlOutput').value = full;
+}
+
+function copyHtml(){
+  const ta = document.getElementById('htmlOutput');
+  ta.select();
+  ta.setSelectionRange(0, 999999);
+  try {
+    document.execCommand('copy');
+    const s = document.getElementById('copyStatus');
+    s.classList.add('show');
+    setTimeout(()=>s.classList.remove('show'), 1800);
+  } catch(e) {
+    alert("Copy failed. Please select the text manually.");
+  }
+  window.getSelection().removeAllRanges();
+}
+
+/* Generate one on load */
+generate();
 </script>
 </body>
 </html>
