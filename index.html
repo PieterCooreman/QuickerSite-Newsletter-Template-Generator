@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -156,6 +155,7 @@
     gap: 12px;
     align-items: center;
   }
+  
   .info {
     font-size: 13px;
     color: #666;
@@ -343,6 +343,16 @@ function photoImg(w, h){
   return `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`;
 }
 
+/* Contact-info row used in every template (just before the unsubscribe footer) */
+function contactRow(contactInfo, font, fg, bg){
+  return `
+  <tr>
+    <td bgcolor="${bg}" style="padding:16px 28px; font-family:${font}; font-size:11px; line-height:1.55; color:${fg}; text-align:center; border-top:1px solid rgba(255,255,255,0.15);">
+      ${contactInfo}
+    </td>
+  </tr>`;
+}
+
 /* Build a paragraph block of N paragraphs */
 function paragraphs(n, font, color){
   let html = "";
@@ -353,7 +363,7 @@ function paragraphs(n, font, color){
 }
 
 /* ---------- TEMPLATE 1: Classic Single Column with Hero ---------- */
-function template1(p, font){
+function template1(p, font, logoUrl, contactInfo){
   const hero = photoImg(580, 280);
   const headline = pick(headlines);
   const greet = pick(greetings);
@@ -362,8 +372,17 @@ function template1(p, font){
   return `
 <table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:#ffffff; font-family:${font};">
   <tr>
-    <td bgcolor="${p.header}" style="padding:24px 28px; font-family:${font}; color:#ffffff; font-size:22px; font-weight:bold; letter-spacing:0.5px;">
-      QuickerSite Newsletter
+    <td bgcolor="${p.header}" style="padding:16px 28px; font-family:${font}; color:#ffffff;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td width="66" style="width:66px; padding-right:14px;">
+            <img src="${logoUrl}" alt="" width="66" style="display:block; width:66px; height:auto; border:0;" />
+          </td>
+          <td style="font-family:${font}; color:#ffffff; font-size:22px; font-weight:bold; letter-spacing:0.5px;">
+            QuickerSite Newsletter
+          </td>
+        </tr>
+      </table>
     </td>
   </tr>
   <tr>
@@ -394,8 +413,9 @@ function template1(p, font){
       </p>
     </td>
   </tr>
+  ${contactRow(contactInfo, font, "#ffffff", p.footer)}
   <tr>
-    <td bgcolor="${p.footer}" style="padding:16px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+    <td bgcolor="${p.footer}" style="padding:8px 28px 14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
       [NL_UNSUBSCRIBELINK]
     </td>
   </tr>
@@ -403,7 +423,7 @@ function template1(p, font){
 }
 
 /* ---------- TEMPLATE 2: Two-Column Image + Text Article ---------- */
-function template2(p, font){
+function template2(p, font, logoUrl, contactInfo){
   const headline = pick(headlines);
   const greet = pick(greetings);
   const sig = pick(signatures);
@@ -415,7 +435,8 @@ function template2(p, font){
   return `
 <table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:${p.bg}; font-family:${font};">
   <tr>
-    <td bgcolor="${p.header}" style="padding:30px 28px; font-family:${font}; color:#ffffff; text-align:center;">
+    <td bgcolor="${p.header}" style="padding:24px 28px; font-family:${font}; color:#ffffff; text-align:center;">
+      <img src="${logoUrl}" alt="" width="66" style="display:inline-block; width:66px; height:auto; border:0; margin-bottom:12px;" />
       <div style="font-size:24px; font-weight:bold; letter-spacing:1px;">QUICKERSITE NEWSLETTER</div>
       <div style="font-size:12px; opacity:0.85; margin-top:6px;">${headline}</div>
     </td>
@@ -449,8 +470,9 @@ function template2(p, font){
       </p>
     </td>
   </tr>
+  ${contactRow(contactInfo, font, "#ffffff", p.footer)}
   <tr>
-    <td bgcolor="${p.footer}" style="padding:16px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+    <td bgcolor="${p.footer}" style="padding:8px 28px 14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
       [NL_UNSUBSCRIBELINK]
     </td>
   </tr>
@@ -458,7 +480,7 @@ function template2(p, font){
 }
 
 /* ---------- TEMPLATE 3: Magazine-style with Sidebar Image ---------- */
-function template3(p, font){
+function template3(p, font, logoUrl, contactInfo){
   const headline = pick(headlines);
   const greet = pick(greetings);
   const sig = pick(signatures);
@@ -466,9 +488,12 @@ function template3(p, font){
   return `
 <table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:#ffffff; font-family:${font}; border:1px solid ${p.soft};">
   <tr>
-    <td bgcolor="${p.header}" style="padding:22px 28px; font-family:${font};">
+    <td bgcolor="${p.header}" style="padding:16px 28px; font-family:${font};">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td width="66" style="width:66px; padding-right:12px;">
+            <img src="${logoUrl}" alt="" width="66" style="display:block; width:66px; height:auto; border:0;" />
+          </td>
           <td style="font-family:${font}; color:#ffffff; font-size:20px; font-weight:bold;">QuickerSite</td>
           <td style="font-family:${font}; color:#ffffff; font-size:11px; text-align:right; opacity:0.9;">NEWSLETTER &middot; ISSUE #${rndInt(10,99)}</td>
         </tr>
@@ -504,8 +529,9 @@ function template3(p, font){
       <strong>${sig.name}</strong>, <em style="color:${p.muted};">${sig.title}</em>
     </td>
   </tr>
+  ${contactRow(contactInfo, font, "#ffffff", p.footer)}
   <tr>
-    <td bgcolor="${p.footer}" style="padding:14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+    <td bgcolor="${p.footer}" style="padding:8px 28px 14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
       [NL_UNSUBSCRIBELINK]
     </td>
   </tr>
@@ -513,15 +539,22 @@ function template3(p, font){
 }
 
 /* ---------- TEMPLATE 4: Bordered Cards Style (QS original-inspired) ---------- */
-function template4(p, font){
+function template4(p, font, logoUrl, contactInfo){
   const sig = pick(signatures);
   const hero = photoImg(540, 200);
   return `
 <table align="center" cellpadding="20" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; border-bottom:${p.bg} 6px solid; border-left:${p.bg} 6px solid; border-top:${p.bg} 6px solid; border-right:${p.bg} 6px solid; font-family:${font}; font-size:13px;">
   <tr>
     <td bgcolor="${p.header}" height="140" style="border-bottom:${p.bg} 6px solid; text-align:right; font-family:${font}; color:#ffffff; font-size:18px; padding:20px;">
-      <em><strong>QuickerSite Newsletter</strong></em><br/>
-      <span style="font-size:11px; opacity:0.85;">${pick(headlines)}</span>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td align="right" valign="bottom" style="font-family:${font}; color:#ffffff; font-size:18px;">
+            <img src="${logoUrl}" alt="" width="55" style="display:inline-block; width:55px; height:auto; border:0; vertical-align:middle; margin-right:10px;" />
+            <em><strong>QuickerSite Newsletter</strong></em><br/>
+            <span style="font-size:11px; opacity:0.85;">${pick(headlines)}</span>
+          </td>
+        </tr>
+      </table>
     </td>
   </tr>
   <tr>
@@ -545,8 +578,9 @@ function template4(p, font){
       </p>
     </td>
   </tr>
+  ${contactRow(contactInfo, font, "#ffffff", p.accent)}
   <tr>
-    <td bgcolor="${p.accent}" style="text-align:center; font-family:${font}; font-size:11px; color:#ffffff; padding:14px;">
+    <td bgcolor="${p.accent}" style="text-align:center; font-family:${font}; font-size:11px; color:#ffffff; padding:8px 14px 14px 14px;">
       [NL_UNSUBSCRIBELINK]
     </td>
   </tr>
@@ -554,7 +588,7 @@ function template4(p, font){
 }
 
 /* ---------- TEMPLATE 5: Featured Article + 3 Highlights ---------- */
-function template5(p, font){
+function template5(p, font, logoUrl, contactInfo){
   const heroImg = photoImg(580, 240);
   const sig = pick(signatures);
   const highlights = pickN(articleTitles, 3);
@@ -575,8 +609,17 @@ function template5(p, font){
   return `
 <table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:#ffffff; font-family:${font};">
   <tr>
-    <td bgcolor="${p.header}" style="padding:20px 28px; font-family:${font}; color:#ffffff; font-size:20px; font-weight:bold;">
-      QuickerSite Newsletter
+    <td bgcolor="${p.header}" style="padding:14px 28px; font-family:${font}; color:#ffffff;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td width="66" style="width:66px; padding-right:14px;">
+            <img src="${logoUrl}" alt="" width="66" style="display:block; width:66px; height:auto; border:0;" />
+          </td>
+          <td style="font-family:${font}; color:#ffffff; font-size:20px; font-weight:bold;">
+            QuickerSite Newsletter
+          </td>
+        </tr>
+      </table>
     </td>
   </tr>
   <tr>
@@ -615,8 +658,9 @@ function template5(p, font){
       <span style="font-size:11px; color:${p.muted};"><em>${sig.title}</em></span>
     </td>
   </tr>
+  ${contactRow(contactInfo, font, "#ffffff", p.footer)}
   <tr>
-    <td bgcolor="${p.footer}" style="padding:14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+    <td bgcolor="${p.footer}" style="padding:8px 28px 14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
       [NL_UNSUBSCRIBELINK]
     </td>
   </tr>
@@ -624,14 +668,15 @@ function template5(p, font){
 }
 
 /* ---------- TEMPLATE 6: Minimal / Editorial ---------- */
-function template6(p, font){
+function template6(p, font, logoUrl, contactInfo){
   const sig = pick(signatures);
   return `
 <table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:#ffffff; font-family:${font};">
   <tr>
-    <td style="padding:32px 32px 12px 32px; font-family:${font}; text-align:center; border-bottom:2px solid ${p.header};">
-      <div style="font-family:${font}; font-size:11px; letter-spacing:3px; color:${p.muted}; text-transform:uppercase;">QuickerSite &middot; Issue ${rndInt(10,99)}</div>
-      <h1 style="margin:10px 0 14px 0; font-family:${font}; font-size:26px; color:${p.header}; font-weight:normal; line-height:1.3;">${pick(headlines)}</h1>
+    <td style="padding:28px 32px 12px 32px; font-family:${font}; text-align:center;">
+      <img src="${logoUrl}" alt="" width="66" style="display:inline-block; width:66px; height:auto; border:0; margin-bottom:14px;" />
+      <div style="font-family:${font}; font-size:11px; letter-spacing:3px; color:${p.muted}; text-transform:uppercase; border-bottom:2px solid ${p.header}; padding-bottom:12px;">QuickerSite &middot; Issue ${rndInt(10,99)}</div>
+      <h1 style="margin:14px 0 0 0; font-family:${font}; font-size:26px; color:${p.header}; font-weight:normal; line-height:1.3;">${pick(headlines)}</h1>
     </td>
   </tr>
   <tr>
@@ -647,8 +692,9 @@ function template6(p, font){
       </p>
     </td>
   </tr>
+  ${contactRow(contactInfo, font, p.muted, "#ffffff")}
   <tr>
-    <td style="padding:16px 32px; text-align:center; font-family:${font}; font-size:10px; color:${p.muted}; letter-spacing:1px; border-top:1px solid ${p.soft};">
+    <td style="padding:10px 32px 16px 32px; text-align:center; font-family:${font}; font-size:10px; color:${p.muted}; letter-spacing:1px;">
       [NL_UNSUBSCRIBELINK]
     </td>
   </tr>
@@ -656,15 +702,18 @@ function template6(p, font){
 }
 
 /* ---------- TEMPLATE 7: Bold Banner with Stats / Promo ---------- */
-function template7(p, font){
+function template7(p, font, logoUrl, contactInfo){
   const heroImg = photoImg(580, 220);
   const sig = pick(signatures);
   return `
 <table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:${p.bg}; font-family:${font};">
   <tr>
-    <td bgcolor="${p.header}" style="padding:18px 28px; font-family:${font}; color:#ffffff;">
+    <td bgcolor="${p.header}" style="padding:14px 28px; font-family:${font}; color:#ffffff;">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td width="66" style="width:66px; padding-right:12px;">
+            <img src="${logoUrl}" alt="" width="66" style="display:block; width:66px; height:auto; border:0;" />
+          </td>
           <td style="font-size:16px; font-weight:bold;">QUICKERSITE</td>
           <td style="font-size:11px; text-align:right; opacity:0.85;">${new Date().toLocaleDateString('en-US',{month:'long', year:'numeric'})}</td>
         </tr>
@@ -723,8 +772,9 @@ function template7(p, font){
       </p>
     </td>
   </tr>
+  ${contactRow(contactInfo, font, "#ffffff", p.footer)}
   <tr>
-    <td bgcolor="${p.footer}" style="padding:14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+    <td bgcolor="${p.footer}" style="padding:8px 28px 14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
       [NL_UNSUBSCRIBELINK]
     </td>
   </tr>
@@ -732,7 +782,7 @@ function template7(p, font){
 }
 
 /* ---------- TEMPLATE 8: List Newsletter (Stories with thumbnails left) ---------- */
-function template8(p, font){
+function template8(p, font, logoUrl, contactInfo){
   const sig = pick(signatures);
   const stories = pickN(articleTitles, 3);
   const thumbs = [
@@ -762,7 +812,8 @@ function template8(p, font){
   return `
 <table align="center" cellpadding="0" cellspacing="0" border="0" width="600" class="qs-nl" style="width:600px; max-width:100%; background-color:#ffffff; font-family:${font};">
   <tr>
-    <td bgcolor="${p.header}" style="padding:24px 28px; text-align:center; font-family:${font};">
+    <td bgcolor="${p.header}" style="padding:18px 28px; text-align:center; font-family:${font};">
+      <img src="${logoUrl}" alt="" width="66" style="display:inline-block; width:66px; height:auto; border:0; margin-bottom:10px;" />
       <div style="color:#ffffff; font-size:22px; font-weight:bold; letter-spacing:1px;">QuickerSite Digest</div>
       <div style="color:#ffffff; opacity:0.8; font-size:11px; margin-top:4px; letter-spacing:2px; text-transform:uppercase;">${pick(headlines)}</div>
     </td>
@@ -789,8 +840,9 @@ function template8(p, font){
       </p>
     </td>
   </tr>
+  ${contactRow(contactInfo, font, "#ffffff", p.footer)}
   <tr>
-    <td bgcolor="${p.footer}" style="padding:14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
+    <td bgcolor="${p.footer}" style="padding:8px 28px 14px 28px; text-align:center; font-family:${font}; font-size:11px; color:#ffffff;">
       [NL_UNSUBSCRIBELINK]
     </td>
   </tr>
@@ -853,7 +905,9 @@ function generate(){
   const palette = pick(palettes);
   const font = pick(fontStacks);
   const tpl = pick(templates);
-  const tableHtml = tpl.fn(palette, font);
+  const logoUrl = 'https://quickersite.com/userfiles/logoQS.png';
+  const contactInfo = 'Company Name<br>1234 Street Name, City, Postal Code<br>Phone: +1 234 567 890 &nbsp;|&nbsp; Email: info@example.com';
+  const tableHtml = tpl.fn(palette, font, logoUrl, contactInfo);
   const full = wrapWithResponsiveStyles(tableHtml);
 
   // Update info
